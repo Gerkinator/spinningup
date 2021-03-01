@@ -206,7 +206,10 @@ def ppo(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(), seed=0,
 
     # Instantiate environment
     env = env_fn()
-    obs_dim = env.observation_space.shape
+    try:
+        obs_dim = env.observation_space['observation'].shape
+    except:
+        obs_dim = env.observation_space.shape
     act_dim = env.action_space.shape
 
     # Create actor-critic module
@@ -293,6 +296,10 @@ def ppo(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(), seed=0,
     # Prepare for interaction with environment
     start_time = time.time()
     o, ep_ret, ep_len = env.reset(), 0, 0
+    try:
+        o = o['observation']
+    except:
+        pass
 
     # Main loop: collect experience in env and update/log each epoch
     for epoch in range(epochs):
@@ -300,6 +307,11 @@ def ppo(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(), seed=0,
             a, v, logp = ac.step(torch.as_tensor(o, dtype=torch.float32))
 
             next_o, r, d, _ = env.step(a)
+            try:
+                next_o = next_o['observation']
+            except:
+                pass
+
             ep_ret += r
             ep_len += 1
 
@@ -327,6 +339,11 @@ def ppo(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(), seed=0,
                     # only save EpRet / EpLen if trajectory finished
                     logger.store(EpRet=ep_ret, EpLen=ep_len)
                 o, ep_ret, ep_len = env.reset(), 0, 0
+                try:
+                    o = o['observation']
+                except:
+                    pass
+
 
 
         # Save model
