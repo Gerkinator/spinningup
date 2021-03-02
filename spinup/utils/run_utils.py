@@ -20,6 +20,11 @@ import time
 from tqdm import trange
 import zlib
 
+from spinup.utils import register_custom_envs
+
+
+
+
 DIV_LINE_WIDTH = 80
 
 def setup_logger_kwargs(exp_name, seed=None, data_dir=None, datestamp=False):
@@ -152,6 +157,7 @@ def call_experiment(exp_name, thunk, seed=0, num_cpu=1, data_dir=None,
         if 'env_name' in kwargs:
             import gym
             env_name = kwargs['env_name']
+            register_custom_envs.register()
             kwargs['env_fn'] = lambda : gym.make(env_name)
             del kwargs['env_name']
 

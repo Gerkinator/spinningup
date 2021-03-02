@@ -13,6 +13,9 @@ import torch
 from copy import deepcopy
 from textwrap import dedent
 
+from spinup.utils import register_custom_envs
+
+register_custom_envs.register()
 
 # Command line args that will go to ExperimentGrid.run, and must possess unique
 # values (therefore must be treated separately).
